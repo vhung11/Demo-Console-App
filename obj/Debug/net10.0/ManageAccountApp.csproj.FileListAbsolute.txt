@@ -12,3 +12,4 @@ C:\Users\admin\OneDrive\Desktop\ManageAccountApp\obj\Debug\net10.0\refint\Manage
 C:\Users\admin\OneDrive\Desktop\ManageAccountApp\obj\Debug\net10.0\ManageAccountApp.pdb
 C:\Users\admin\OneDrive\Desktop\ManageAccountApp\obj\Debug\net10.0\ManageAccountApp.genruntimeconfig.cache
 C:\Users\admin\OneDrive\Desktop\ManageAccountApp\obj\Debug\net10.0\ref\ManageAccountApp.dll
+C:\Users\admin\OneDrive\Desktop\ManageAccountApp\obj\Debug\net10.0\ManageAccountApp.sourcelink.json
