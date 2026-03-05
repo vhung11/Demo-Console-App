@@ -13,6 +13,137 @@ Console app quản lý tài khoản ngân hàng viết bằng C# (.NET 10.0) cho
   - Tài khoản tiết kiệm: **4.7%**
   - Tài khoản thanh toán: **5.1%**
 
+## Các tính chất OOP đã áp dụng
+
+### 1. **Encapsulation (Đóng gói)**
+
+**Mục đích:** Ngăn chặn truy cập trực tiếp từ bên ngoài.
+
+**Áp dụng trong project:**
+
+```csharp
+// AccountService.cs
+public class AccountService
+{
+    // Private fields - chỉ truy cập được trong class
+    private readonly List<Account> _accounts = new List<Account>();
+    private int _nextId = 1;
+    
+    // Public methods - interface để tương tác với dữ liệu
+    public int AddAccount(string name, decimal balance) { ... }
+    public bool DeleteAccount(int id) { ... }
+}
+
+// SubAccount.cs
+public abstract class SubAccount
+{
+    // Protected - cho phép class con truy cập nhưng bên ngoài không thể
+    protected set { ... }
+    public decimal Balance { get; protected set; }
+    public decimal InterestRate { get; protected set; }
+}
+```
+
+### 2. **Inheritance (Kế thừa)**
+
+**Mục đích:** Tái sử dụng code
+
+**Áp dụng trong project:**
+
+```csharp
+// SubAccount.cs - Class cha
+public abstract class SubAccount
+{
+    public decimal Balance { get; protected set; }
+    public virtual bool Deposit(decimal amount) { ... }
+    public virtual bool Withdraw(decimal amount) { ... }
+}
+
+// SavingsAccount.cs - Class con kế thừa
+public class SavingsAccount : SubAccount
+{
+    private const decimal SAVINGS_INTEREST_RATE = 4.7m;
+    
+    public SavingsAccount(decimal initialBalance = 0) 
+        : base("Tài khoản tiết kiệm", initialBalance, SAVINGS_INTEREST_RATE)
+    { }
+}
+
+// CheckingAccount.cs - Class con kế thừa
+public class CheckingAccount : SubAccount
+{
+    private const decimal CHECKING_INTEREST_RATE = 5.1m;
+    
+    public CheckingAccount(decimal initialBalance = 0) 
+        : base("Tài khoản thanh toán", initialBalance, CHECKING_INTEREST_RATE)
+    { }
+}
+```
+
+### 3. **Polymorphism (Đa hình)**
+
+**Áp dụng trong project:**
+
+```csharp
+// SubAccount.cs - Định nghĩa virtual methods
+public abstract class SubAccount
+{
+    public virtual bool Deposit(decimal amount) { ... }
+    public virtual bool Withdraw(decimal amount) { ... }
+    public virtual void ApplyInterest() { ... }
+}
+
+// Các class con có thể override để custom behavior
+public class CheckingAccount : SubAccount
+{
+    public override bool Withdraw(decimal amount)
+    {
+        // Có thể thêm logic riêng cho tài khoản thanh toán
+        return base.Withdraw(amount);
+    }
+}
+
+// Account.cs - Sử dụng polymorphism
+public class Account
+{
+    public SavingsAccount SavingsAccount { get; set; }
+    public CheckingAccount CheckingAccount { get; set; }
+    
+    public void ApplyInterestToAll()
+    {
+        // Gọi cùng một method nhưng mỗi account xử lý khác nhau
+        SavingsAccount.ApplyInterest();  // Áp dụng lãi 4.7%
+        CheckingAccount.ApplyInterest(); // Áp dụng lãi 5.1%
+    }
+}
+```
+
+### 4. **Abstraction (Trừu tượng hóa)**
+
+**Mục đích:** Ẩn chi tiết phức tạp, chỉ hiển thị những gì cần thiết.
+
+**Áp dụng trong project:**
+
+```csharp
+// SubAccount.cs - sử dụng Abstract class
+public abstract class SubAccount
+{
+    // Định nghĩa "contract" - các class con phải có
+    protected SubAccount(string type, decimal initialBalance, decimal interestRate)
+    { ... }
+}
+
+// DTO Pattern - chỉ trả về dữ liệu của đối tượng chứ ko trả về đối tượng đó
+public class AccountDTO
+{
+    // Chỉ expose data cần thiết cho UI
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public decimal SavingsBalance { get; set; }
+    public decimal CheckingBalance { get; set; }
+    public decimal TotalBalance { get; set; }
+}
+
 ## 🚀 Cách chạy ứng dụng
 
 ### Yêu cầu
@@ -31,4 +162,7 @@ dotnet run
 ```bash
 # Build project
 dotnet build
+
 ```
+
+
