@@ -162,43 +162,26 @@ namespace ManageAccountApp.Services
         public void InitializeSampleData()
         {
             // Tạo các tài khoản mẫu với số dư khác nhau
-            AddAccount("Nguyễn Văn An", 900000);      // 900 nghìn
+            AddAccount("Nguyễn Văn An", 10000000);      // 10 triệu
             AddAccount("Trần Thị Bình", 25000000);      // 25 triệu
-            AddAccount("Lê Văn Cường", 5000000);        // 5 triệu
+            AddAccount("Lê Văn Cường", 500000);        // 5 triệu
             AddAccount("Phạm Thị Dung", 50000000);      // 50 triệu
             AddAccount("Hoàng Văn Em", 15000000);       // 15 triệu
             AddAccount("Vũ Thị Phương", 30000000);      // 30 triệu
             AddAccount("Đỗ Văn Giang", 8000000);        // 8 triệu
-            AddAccount("Bùi Thị Hoa", 45000000);    // 45 triệu
-            AddAccount("Nguyễn Thị Lan", 12000000);      // 12 triệu
+            AddAccount("Bùi Thị Hoa", 450000);        // 45 triệu
+            AddAccount("Nguyễn Thị Lan", 12000000);     // 12 triệu
             AddAccount("Trần Văn Minh", 7000000);       // 7 triệu
-            AddAccount("Phạm Văn Nam", 200000);       // 2 triệu
-            AddAccount("Lê Thị Oanh", 6000000);        // 6 triệu
-            AddAccount("Hoàng Thị Phương", 35000000);   // 35 triệu
-            AddAccount("Vũ Văn Quang", 400000);       // 4 triệu
-            AddAccount("Đỗ Thị Thu", 10000000);        // 10 triệu
-            AddAccount("Bùi Văn Sơn", 800000);        // 8 triệu
-            AddAccount("Nguyễn Thị Trang", 22000000);     // 22 triệu
-            AddAccount("Trần Văn Uy", 9000000);        // 9 triệu
-            AddAccount("Phạm Thị Vân", 3000000);       // 3 triệu
-            AddAccount("Lê Văn Xinh", 40000000);       // 40 triệu
-            AddAccount("Hoàng Thị Yến", 500000);       // 5 triệu
-            AddAccount("Vũ Văn Zung", 1500000);        // 1.5 triệu
-            AddAccount("Đỗ Thị Ánh", 2500000);        // 2.5 triệu
-            AddAccount("Bùi Văn Bình", 700000);       // 7 triệu
-            AddAccount("Nguyễn Thị Cẩm", 18000000);     // 18 triệu
-            AddAccount("Trần Văn Dũng", 1200000);      // 1.2 triệu
-            AddAccount("Phạm Thị Hương", 9000000);     // 9 triệu
-            AddAccount("Lê Văn Khoa", 600000);        // 6 triệu
-            AddAccount("Hoàng Thị Lan", 4000000);      // 4 triệu
-            AddAccount("Vũ Văn Mạnh", 8000000);       // 8 triệu
-            AddAccount("Đỗ Thị Nga", 2000000);        // 2 triệu
-            AddAccount("Bùi Văn Phúc", 30000000);     // 30 triệu
-            AddAccount("Nguyễn Thị Quỳnh", 1000000);      // 1 triệu
-            AddAccount("Trần Văn Sơn", 5000000);       // 5 triệu
-            AddAccount("Phạm Thị Thu", 25000000);      // 25 triệu
-            AddAccount("Lê Văn Vinh", 7000000);       // 7 triệu
-            AddAccount("Hoàng Thị Xuân", 15000000);    // 15 triệu
+            AddAccount("Phạm Văn Nam", 2000000);        // 2 triệu
+            AddAccount("Lê Thị Oanh", 600000);         // 6 triệu
+            AddAccount("Hoàng Thị Phương", 350000);   // 35 triệu
+            AddAccount("Vũ Văn Quang", 4000000);        // 4 triệu
+            AddAccount("Đỗ Thị Thu", 10000000);         // 10 triệu
+            AddAccount("Bùi Văn Sơn", 8000000);         // 8 triệu
+            AddAccount("Nguyễn Thị Trang", 22000000);   // 22 triệu
+            AddAccount("Trần Văn Uy", 90000);         // 9 triệu
+            AddAccount("Phạm Thị Vân", 3000000);        // 3 triệu
+            AddAccount("Lê Văn Xinh", 40000000);        // 40 triệu
         }
     }
 }
