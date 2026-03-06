@@ -143,6 +143,7 @@ public class AccountDTO
     public decimal CheckingBalance { get; set; }
     public decimal TotalBalance { get; set; }
 }
+```
 
 ## Sử dụng LINQ
 
@@ -190,7 +191,6 @@ public class AccountDTO
             
             return total;
         }
-
 ```
 
 ## 🚀 Cách chạy ứng dụng
