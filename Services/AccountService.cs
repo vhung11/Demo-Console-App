@@ -6,9 +6,15 @@ namespace ManageAccountApp.Services
 {
     public class AccountService
     {
+        #region Fields
+
         // Danh sách lưu trữ tạm thời trong bộ nhớ (RAM)
         private readonly List<Account> _accounts = new List<Account>();
         private int _nextId = 1;
+
+        #endregion
+
+        #region CRUD Operations
 
         // 1. Thêm tài khoản
         public int AddAccount(string name, decimal balance)
@@ -34,6 +40,10 @@ namespace ManageAccountApp.Services
             }
             return false;
         }
+
+        #endregion
+
+        #region Transaction Operations
 
         // 3. Nạp tiền vào tài khoản tiết kiệm
         public bool DepositToSavings(int id, decimal amount)
@@ -82,6 +92,10 @@ namespace ManageAccountApp.Services
         {
             return WithdrawFromChecking(id, amount);
         }
+
+        #endregion
+
+        #region Query & Statistics Operations
 
         // 7. Áp dụng lãi suất cho tất cả tài khoản
         public void ApplyInterestToAllAccounts()
@@ -147,6 +161,10 @@ namespace ManageAccountApp.Services
             return AccountMapper.ToDTO(account);
         }
 
+        #endregion
+
+        #region Private Helper Methods
+
         private Account? FindById(int id)
         {
             var account = (from a in _accounts
@@ -155,6 +173,10 @@ namespace ManageAccountApp.Services
             
             return account;
         }
+
+        #endregion
+
+        #region Sample Data
 
         /// <summary>
         /// Khởi tạo dữ liệu mẫu
@@ -183,5 +205,7 @@ namespace ManageAccountApp.Services
             AddAccount("Phạm Thị Vân", 3000000);        // 3 triệu
             AddAccount("Lê Văn Xinh", 40000000);        // 40 triệu
         }
+
+        #endregion
     }
 }

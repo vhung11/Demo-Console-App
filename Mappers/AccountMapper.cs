@@ -4,6 +4,7 @@ namespace ManageAccountApp.Mappers
 {
     public static class AccountMapper
     {
+        #region Mapping Methods
         public static AccountDTO ToDTO(Account account)
         {
             if (account == null)
@@ -28,5 +29,7 @@ namespace ManageAccountApp.Mappers
             
             return dtoList;
         }
+
+        #endregion
     }
 }

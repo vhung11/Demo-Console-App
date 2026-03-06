@@ -6,12 +6,22 @@ namespace ManageAccountApp.UI
 {
     public class AccountFunctionsUI
     {
+        #region Fields
+
         private readonly AccountService _accountService;
+
+        #endregion
+
+        #region Constructor
 
         public AccountFunctionsUI(AccountService accountService)
         {
             _accountService = accountService;
         }
+
+        #endregion
+
+        #region Display Methods
 
         public void ShowAllAccounts()
         {
@@ -40,6 +50,10 @@ namespace ManageAccountApp.UI
             Console.WriteLine($"  ├─ Tài khoản thanh toán: {account.CheckingBalance:N0} VND (5.1%)");
             Console.WriteLine($"  └─ Tổng số dư: {account.TotalBalance:N0} VND");
         }
+
+        #endregion
+
+        #region CRUD Operations
 
         public void AddAccount()
         {
@@ -72,6 +86,10 @@ namespace ManageAccountApp.UI
             else
                 Console.WriteLine("✗ Không tìm thấy tài khoản với ID này.");
         }
+
+        #endregion
+
+        #region Transaction Methods
 
         public void Deposit()
         {
@@ -214,6 +232,10 @@ namespace ManageAccountApp.UI
             ShowAllAccounts();
         }
 
+        #endregion
+
+        #region Query & Statistics Methods
+
         public void ShowRankedAccountsByBalance()
         {
             Console.WriteLine("=== XẾP HẠNG ACCOUNT THEO SỐ DƯ ===\n");
@@ -284,5 +306,7 @@ namespace ManageAccountApp.UI
             decimal totalInvestmentBalance = _accountService.GetTotalInvestmentBalance();
             Console.WriteLine($"Tổng số dư tài khoản đầu tư (tiết kiệm): {totalInvestmentBalance:N0} VND");
         }
+
+        #endregion
     }
 }
