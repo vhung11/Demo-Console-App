@@ -118,7 +118,7 @@ public class Account
 }
 ```
 
-### 4. **Abstraction (Trừu tượng hóa)**
+### 4. **Abstraction (Trừu tượng)**
 
 **Mục đích:** Ẩn chi tiết phức tạp, chỉ hiển thị những gì cần thiết.
 
@@ -143,6 +143,55 @@ public class AccountDTO
     public decimal CheckingBalance { get; set; }
     public decimal TotalBalance { get; set; }
 }
+
+## Sử dụng LINQ
+
+```csharp
+// 9. Xếp hạng account theo tổng số dư (giảm dần)
+        public List<AccountDTO> GetAccountsRankedByBalance()
+        {
+            var query = from account in _accounts
+                        orderby account.GetTotalBalance() descending, account.Id
+                        select account;
+            
+            return AccountMapper.ToDTOList(query);
+        }
+
+
+
+        // 10. Danh sách account có tổng số dư nhỏ hơn ngưỡng cho trước
+        public List<AccountDTO> GetAccountsBelowBalance(decimal threshold)
+        {
+            var query = from account in _accounts
+                        where account.GetTotalBalance() < threshold
+                        orderby account.GetTotalBalance(), account.Id
+                        select account;
+            
+            return AccountMapper.ToDTOList(query);
+        }
+
+        // 11. Top N account có số dư tài khoản thanh toán lớn nhất
+        public List<AccountDTO> GetTopCheckingAccounts(int top)
+        {
+            if (top <= 0) return new List<AccountDTO>();
+
+            var query = (from account in _accounts
+                         orderby account.CheckingAccount.Balance descending, account.Id
+                         select account).Take(top);
+            
+            return AccountMapper.ToDTOList(query);
+        }
+
+        // 12. Tổng số dư tài khoản đầu tư (quy ước dùng tài khoản tiết kiệm hiện có)
+        public decimal GetTotalInvestmentBalance()
+        {
+            var total = (from account in _accounts
+                         select account.SavingsAccount.Balance).Sum();
+            
+            return total;
+        }
+
+```
 
 ## 🚀 Cách chạy ứng dụng
 
