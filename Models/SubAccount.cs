@@ -2,9 +2,17 @@ namespace ManageAccountApp.Models
 {
     public abstract class SubAccount
     {
-        public string Type { get; protected set; }
-        public decimal Balance { get; protected set; }
-        public decimal InterestRate { get; protected set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; } // Foreign key to Account
+        public string Type { get; set; }
+        public decimal Balance { get; set; }
+        public decimal InterestRate { get; set; }
+
+        // Constructor không tham số cho EF Core
+        protected SubAccount()
+        {
+            Type = string.Empty;
+        }
 
         protected SubAccount(string type, decimal initialBalance, decimal interestRate)
         {

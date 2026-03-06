@@ -5,6 +5,9 @@ namespace ManageAccountApp.Models
         // Lãi suất thanh toán: 5.1%
         private const decimal CHECKING_INTEREST_RATE = 5.1m;
 
+        public CheckingAccount()
+        {
+        }
         public CheckingAccount(decimal initialBalance = 0) 
             : base("Tài khoản thanh toán", initialBalance, CHECKING_INTEREST_RATE)
         {

@@ -1,6 +1,8 @@
+using ManageAccountApp.Data;
 using ManageAccountApp.Mappers;
 using ManageAccountApp.Models;
 using ManageAccountApp.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManageAccountApp.Services
 {
@@ -8,9 +10,17 @@ namespace ManageAccountApp.Services
     {
         #region Fields
 
-        // Danh sách lưu trữ tạm thời trong bộ nhớ (RAM)
-        private readonly List<Account> _accounts = new List<Account>();
-        private int _nextId = 1;
+        // DbContext để kết nối với Oracle Database
+        private readonly ApplicationDbContext _context;
+
+        #endregion
+
+        #region Constructor
+
+        public AccountService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         #endregion
 
@@ -22,20 +32,31 @@ namespace ManageAccountApp.Services
             if (string.IsNullOrWhiteSpace(name) || balance < 0)
                 return 0;
 
-            int newId = _nextId;
-            _accounts.Add(new Account(newId, name, balance));
-            _nextId++;
+            var account = new Account
+            {
+                Name = name,
+                SavingsAccount = new SavingsAccount(balance / 2),
+                CheckingAccount = new CheckingAccount(balance / 2)
+            };
 
-            return newId;
+            _context.Accounts.Add(account);
+            _context.SaveChanges();
+
+            return account.Id;
         }
 
         // 2. Xóa tài khoản
         public bool DeleteAccount(int id)
         {
-            var account = FindById(id);
+            var account = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .FirstOrDefault(a => a.Id == id);
+                
             if (account != null)
             {
-                _accounts.Remove(account);
+                _context.Accounts.Remove(account);
+                _context.SaveChanges();
                 return true;
             }
             return false;
@@ -48,37 +69,69 @@ namespace ManageAccountApp.Services
         // 3. Nạp tiền vào tài khoản tiết kiệm
         public bool DepositToSavings(int id, decimal amount)
         {
-            var account = FindById(id);
+            var account = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .FirstOrDefault(a => a.Id == id);
+                
             if (account == null) return false;
 
-            return account.SavingsAccount.Deposit(amount);
+            var result = account.SavingsAccount.Deposit(amount);
+            if (result)
+            {
+                _context.SaveChanges();
+            }
+            return result;
         }
 
         // 4. Nạp tiền vào tài khoản thanh toán
         public bool DepositToChecking(int id, decimal amount)
         {
-            var account = FindById(id);
+            var account = _context.Accounts
+                .Include(a => a.CheckingAccount)
+                .FirstOrDefault(a => a.Id == id);
+                
             if (account == null) return false;
 
-            return account.CheckingAccount.Deposit(amount);
+            var result = account.CheckingAccount.Deposit(amount);
+            if (result)
+            {
+                _context.SaveChanges();
+            }
+            return result;
         }
 
         // 5. Rút tiền từ tài khoản tiết kiệm
         public bool WithdrawFromSavings(int id, decimal amount)
         {
-            var account = FindById(id);
+            var account = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .FirstOrDefault(a => a.Id == id);
+                
             if (account == null) return false;
 
-            return account.SavingsAccount.Withdraw(amount);
+            var result = account.SavingsAccount.Withdraw(amount);
+            if (result)
+            {
+                _context.SaveChanges();
+            }
+            return result;
         }
 
         // 6. Rút tiền từ tài khoản thanh toán
         public bool WithdrawFromChecking(int id, decimal amount)
         {
-            var account = FindById(id);
+            var account = _context.Accounts
+                .Include(a => a.CheckingAccount)
+                .FirstOrDefault(a => a.Id == id);
+                
             if (account == null) return false;
 
-            return account.CheckingAccount.Withdraw(amount);
+            var result = account.CheckingAccount.Withdraw(amount);
+            if (result)
+            {
+                _context.SaveChanges();
+            }
+            return result;
         }
 
         // Giữ lại để tương thích ngược: mặc định nạp vào tài khoản thanh toán
@@ -100,21 +153,38 @@ namespace ManageAccountApp.Services
         // 7. Áp dụng lãi suất cho tất cả tài khoản
         public void ApplyInterestToAllAccounts()
         {
-            foreach (var account in _accounts)
+            var accounts = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .ToList();
+                
+            foreach (var account in accounts)
             {
                 account.ApplyInterestToAll();
             }
+            
+            _context.SaveChanges();
         }
 
         public List<AccountDTO> GetAllAccounts()
         {
-            return AccountMapper.ToDTOList(_accounts);
+            var accounts = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .ToList();
+                
+            return AccountMapper.ToDTOList(accounts);
         }
 
         // 9. Xếp hạng account theo tổng số dư (giảm dần)
         public List<AccountDTO> GetAccountsRankedByBalance()
         {
-            var query = _accounts
+            var accounts = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .ToList();
+                
+            var query = accounts
                 .OrderByDescending(account => account.GetTotalBalance())
                 .ThenBy(account => account.Id);
             
@@ -124,7 +194,12 @@ namespace ManageAccountApp.Services
         // 10. Danh sách account có tổng số dư nhỏ hơn ngưỡng cho trước
         public List<AccountDTO> GetAccountsBelowBalance(decimal threshold)
         {
-            var query = _accounts
+            var accounts = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .ToList();
+                
+            var query = accounts
                 .Where(account => account.GetTotalBalance() < threshold)
                 .OrderBy(account => account.GetTotalBalance())
                 .ThenBy(account => account.Id);
@@ -137,7 +212,12 @@ namespace ManageAccountApp.Services
         {
             if (top <= 0) return new List<AccountDTO>();
 
-            var query = _accounts
+            var accounts = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .ToList();
+                
+            var query = accounts
                 .OrderByDescending(account => account.CheckingAccount.Balance)
                 .ThenBy(account => account.Id)
                 .Take(top);
@@ -148,7 +228,9 @@ namespace ManageAccountApp.Services
         // 12. Tổng số dư tài khoản đầu tư (quy ước dùng tài khoản tiết kiệm hiện có)
         public decimal GetTotalInvestmentBalance()
         {
-            var total = _accounts
+            var total = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .ToList()
                 .Select(account => account.SavingsAccount.Balance)
                 .Sum();
             
@@ -157,21 +239,14 @@ namespace ManageAccountApp.Services
 
         public AccountDTO? GetAccountInfoById(int id)
         {
-            var account = FindById(id);
+            var account = _context.Accounts
+                .Include(a => a.SavingsAccount)
+                .Include(a => a.CheckingAccount)
+                .FirstOrDefault(a => a.Id == id);
+                
             if (account == null) return null;
 
             return AccountMapper.ToDTO(account);
-        }
-
-        #endregion
-
-        #region Private Helper Methods
-
-        private Account? FindById(int id)
-        {
-            var account = _accounts.FirstOrDefault(a => a.Id == id);
-            
-            return account;
         }
 
         #endregion
@@ -183,6 +258,12 @@ namespace ManageAccountApp.Services
         /// </summary>
         public void InitializeSampleData()
         {
+            // Kiểm tra nếu đã có dữ liệu thì không thêm nữa
+            if (_context.Accounts.Any())
+            {
+                return;
+            }
+
             // Tạo các tài khoản mẫu với số dư khác nhau
             AddAccount("Nguyễn Văn An", 10000000);      // 10 triệu
             AddAccount("Trần Thị Bình", 25000000);      // 25 triệu

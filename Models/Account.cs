@@ -3,11 +3,16 @@ namespace ManageAccountApp.Models
     public class Account
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         // Tài khoản con: Tiết kiệm (4.7%) và Thanh toán (5.1%)
-        public SavingsAccount SavingsAccount { get; set; }
-        public CheckingAccount CheckingAccount { get; set; }
+        public SavingsAccount SavingsAccount { get; set; } = null!;
+        public CheckingAccount CheckingAccount { get; set; } = null!;
+
+        // Constructor không tham số cho EF Core
+        public Account()
+        {
+        }
 
         public Account(int id, string name, decimal initialBalance)
         {
