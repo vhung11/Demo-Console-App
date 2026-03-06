@@ -114,9 +114,9 @@ namespace ManageAccountApp.Services
         // 9. Xếp hạng account theo tổng số dư (giảm dần)
         public List<AccountDTO> GetAccountsRankedByBalance()
         {
-            var query = from account in _accounts
-                        orderby account.GetTotalBalance() descending, account.Id
-                        select account;
+            var query = _accounts
+                .OrderByDescending(account => account.GetTotalBalance())
+                .ThenBy(account => account.Id);
             
             return AccountMapper.ToDTOList(query);
         }
@@ -124,10 +124,10 @@ namespace ManageAccountApp.Services
         // 10. Danh sách account có tổng số dư nhỏ hơn ngưỡng cho trước
         public List<AccountDTO> GetAccountsBelowBalance(decimal threshold)
         {
-            var query = from account in _accounts
-                        where account.GetTotalBalance() < threshold
-                        orderby account.GetTotalBalance(), account.Id
-                        select account;
+            var query = _accounts
+                .Where(account => account.GetTotalBalance() < threshold)
+                .OrderBy(account => account.GetTotalBalance())
+                .ThenBy(account => account.Id);
             
             return AccountMapper.ToDTOList(query);
         }
@@ -137,9 +137,10 @@ namespace ManageAccountApp.Services
         {
             if (top <= 0) return new List<AccountDTO>();
 
-            var query = (from account in _accounts
-                         orderby account.CheckingAccount.Balance descending, account.Id
-                         select account).Take(top);
+            var query = _accounts
+                .OrderByDescending(account => account.CheckingAccount.Balance)
+                .ThenBy(account => account.Id)
+                .Take(top);
             
             return AccountMapper.ToDTOList(query);
         }
@@ -147,8 +148,9 @@ namespace ManageAccountApp.Services
         // 12. Tổng số dư tài khoản đầu tư (quy ước dùng tài khoản tiết kiệm hiện có)
         public decimal GetTotalInvestmentBalance()
         {
-            var total = (from account in _accounts
-                         select account.SavingsAccount.Balance).Sum();
+            var total = _accounts
+                .Select(account => account.SavingsAccount.Balance)
+                .Sum();
             
             return total;
         }
@@ -167,9 +169,7 @@ namespace ManageAccountApp.Services
 
         private Account? FindById(int id)
         {
-            var account = (from a in _accounts
-                          where a.Id == id
-                          select a).FirstOrDefault();
+            var account = _accounts.FirstOrDefault(a => a.Id == id);
             
             return account;
         }

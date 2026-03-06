@@ -24,8 +24,9 @@ namespace ManageAccountApp.Mappers
             if (accounts == null)
                 throw new ArgumentNullException(nameof(accounts), "Danh sách accounts không được null");
 
-            var dtoList = (from account in accounts
-                          select ToDTO(account)).ToList();
+            var dtoList = accounts
+                .Select(account => ToDTO(account))
+                .ToList();
             
             return dtoList;
         }
