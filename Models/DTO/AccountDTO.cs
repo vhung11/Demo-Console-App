@@ -1,4 +1,4 @@
-namespace ManageAccountApp.Services
+namespace ManageAccountApp.Models.DTO
 {
     /// <summary>
     /// Data Transfer Object - chứa thông tin tài khoản để truyền từ Service đến UI

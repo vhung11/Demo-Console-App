@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 
 namespace ManageAccountApp.UI
@@ -52,6 +51,22 @@ namespace ManageAccountApp.UI
                         _functionsUI.ApplyInterest();
                         break;
 
+                    case "7":
+                        _functionsUI.ShowRankedAccountsByBalance();
+                        break;
+
+                    case "8":
+                        _functionsUI.ShowAccountsBelowOneMillion();
+                        break;
+
+                    case "9":
+                        _functionsUI.ShowTop10CheckingAccounts();
+                        break;
+
+                    case "10":
+                        _functionsUI.ShowTotalInvestmentBalance();
+                        break;
+
                     case "0":
                         isRunning = false;
                         Console.WriteLine("Thoát chương trình...");
@@ -76,8 +91,12 @@ namespace ManageAccountApp.UI
             Console.WriteLine("4. Nộp tiền");
             Console.WriteLine("5. Rút tiền");
             Console.WriteLine("6. Tính lãi suất");
+            Console.WriteLine("7. Xếp hạng account theo số dư");
+            Console.WriteLine("8. Hiển thị account dưới 1 triệu");
+            Console.WriteLine("9. Top 10 account có số dư thanh toán lớn nhất");
+            Console.WriteLine("10. Tổng số dư tài khoản đầu tư");
             Console.WriteLine("0. Thoát");
-            Console.Write("Chọn chức năng (0-6): ");
+            Console.Write("Chọn chức năng (0-10): ");
         }
 
         private void Pause()

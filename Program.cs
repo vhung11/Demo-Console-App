@@ -8,6 +8,10 @@ namespace ManageAccountApp
         static void Main(string[] args)
         {
             var accountService = new AccountService();
+            
+            // Khởi tạo dữ liệu mẫu
+            accountService.InitializeSampleData();
+            
             var functionsUI = new AccountFunctionsUI(accountService);
             var consoleUI = new ConsoleUI(functionsUI);
             consoleUI.Run();

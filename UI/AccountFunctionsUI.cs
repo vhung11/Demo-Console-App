@@ -1,5 +1,6 @@
 using ManageAccountApp.Helpers;
 using ManageAccountApp.Services;
+using ManageAccountApp.Models.DTO;
 
 namespace ManageAccountApp.UI
 {
@@ -211,6 +212,77 @@ namespace ManageAccountApp.UI
             Console.WriteLine("✓ Tính lãi suất thành công!");
             Console.WriteLine("\nDanh sách tài khoản sau khi cộng lãi:");
             ShowAllAccounts();
+        }
+
+        public void ShowRankedAccountsByBalance()
+        {
+            Console.WriteLine("=== XẾP HẠNG ACCOUNT THEO SỐ DƯ ===\n");
+
+            var rankedAccounts = _accountService.GetAccountsRankedByBalance();
+            if (rankedAccounts.Count == 0)
+            {
+                Console.WriteLine("Chưa có tài khoản nào.");
+                return;
+            }
+
+            int rank = 1;
+            foreach (var account in rankedAccounts)
+            {
+                Console.WriteLine($"#{rank} - {account.Name} (ID: {account.Id})");
+                Console.WriteLine($"  Tổng số dư: {account.TotalBalance:N0} VND");
+                Console.WriteLine($"  Tiết kiệm: {account.SavingsBalance:N0} VND | Thanh toán: {account.CheckingBalance:N0} VND");
+                Console.WriteLine(new string('-', 40));
+                rank++;
+            }
+        }
+
+        public void ShowAccountsBelowOneMillion()
+        {
+            const decimal threshold = 1_000_000m;
+
+            Console.WriteLine("=== ACCOUNT CÓ SỐ DƯ DƯỚI 1 TRIỆU ===\n");
+
+            var lowBalanceAccounts = _accountService.GetAccountsBelowBalance(threshold);
+            if (lowBalanceAccounts.Count == 0)
+            {
+                Console.WriteLine("Không có account nào dưới 1,000,000 VND.");
+                return;
+            }
+
+            foreach (var account in lowBalanceAccounts)
+            {
+                ShowAccountDetails(account);
+                Console.WriteLine(new string('-', 40));
+            }
+        }
+
+        public void ShowTop10CheckingAccounts()
+        {
+            Console.WriteLine("=== TOP 10 ACCOUNT CÓ SỐ DƯ THANH TOÁN LỚN NHẤT ===\n");
+
+            var topCheckingAccounts = _accountService.GetTopCheckingAccounts(10);
+            if (topCheckingAccounts.Count == 0)
+            {
+                Console.WriteLine("Chưa có tài khoản nào.");
+                return;
+            }
+
+            int rank = 1;
+            foreach (var account in topCheckingAccounts)
+            {
+                Console.WriteLine($"#{rank} - {account.Name} (ID: {account.Id})");
+                Console.WriteLine($"  Số dư thanh toán: {account.CheckingBalance:N0} VND");
+                Console.WriteLine(new string('-', 40));
+                rank++;
+            }
+        }
+
+        public void ShowTotalInvestmentBalance()
+        {
+            Console.WriteLine("=== TỔNG SỐ DƯ TÀI KHOẢN ĐẦU TƯ ===\n");
+
+            decimal totalInvestmentBalance = _accountService.GetTotalInvestmentBalance();
+            Console.WriteLine($"Tổng số dư tài khoản đầu tư (tiết kiệm): {totalInvestmentBalance:N0} VND");
         }
     }
 }
